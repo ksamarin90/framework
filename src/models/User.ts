@@ -1,24 +1,37 @@
+import axios, { AxiosResponse } from "axios";
+
 interface UserProps {
-    name?: string; 
+    id?: number;
+    name?: string;
     age?: number;
 }
 
-type Callback = () => {}
-
 export class User {
-    events: { [key: string]: Callback[] } = {}
-    constructor(private data: UserProps) {}
+    constructor(private data: UserProps) { }
 
     get(propName: string): (string | number) {
         return this.data[propName];
     }
 
-    set(update: UserProps):void {
+    set(update: UserProps): void {
         Object.assign(this.data, update);
     }
 
-    on(eventName: string, callback: Callback) {
-        
+    fetch(): void {
+        axios.get(`http://localhost:3000/users/${this.get('id')}`)
+            .then((res: AxiosResponse): void => {
+                this.set(res.data);
+            })
+    }
+
+    save(): void {
+        const id = this.get('id')
+        const url = `http://localhost:3000/users`
+        if (id) {
+            axios.put(`${url}/${id}`, this.data);
+        } else {
+            axios.post(url, this.data)
+        }
     }
 
 }
