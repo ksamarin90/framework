@@ -1,14 +1,15 @@
-export class UserForm {
-    constructor(public parent: Element) {}
+import { User } from '../models/User';
 
-    onButtonClick(): void {
-        console.log('click')
+export class UserForm {
+    constructor(public parent: Element, public model: User) {}
+
+    onSetAgeClick = (): void => {
+        this.model.setRandomAge();
     }
 
     eventsMap(): { [key: string]: () => void } {
         return {
-            'click:button': this.onButtonClick,
-            'mouseenter:h1': this.onButtonClick,
+            'click:.set-age': this.onSetAgeClick,
         };
     }
 
@@ -16,7 +17,10 @@ export class UserForm {
         return `
             <div>
                 <h1>User Form</h1>
+                <div>User name: ${this.model.get('name')}</div>
+                <div>User age: ${this.model.get('age')}</div>
                 <button>Click</button>
+                <button class="set-age">Set Random Age</button>
             </div>
         `;
     }
